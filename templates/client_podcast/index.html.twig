@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos podcasts !{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50">
+    {# Hero Section #}
+    <section class="relative bg-gradient-to-r from-orange-500 to-red-800 rounded-b-3xl overflow-hidden shadow-xl">
+        <div class="container mx-auto px-4 py-16 md:py-24 lg:py-32">
+            <div class="relative z-10 text-center max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                    Découvrez nos émissions exclusifs
+                </h1>
+                <p class="text-xl text-yellow-100 mb-8 max-w-2xl mx-auto">
+                    Plongez dans un univers d'histoires captivantes et d'analyses pertinentes
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#latest-podcasts" 
+                       class="px-6 py-3 bg-white text-yellow-900 font-medium rounded-lg hover:bg-yellow-50 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        Écouter maintenant
+                    </a>
+                    <a href="#categories" 
+                       class="px-6 py-3 border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition-all duration-300">
+                        Explorer les catégories
+                    </a>
+                </div>
+            </div>
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <img src="https://images.unsplash.com/photo-1486596538271-46f894196564?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                     alt="Podcasts" class="w-full h-full object-cover">
+            </div>
+        </div>
+    </section>
+
+    {# Latest Podcasts #}
+    <section id="latest-podcasts" class="container mx-auto px-4 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Nos derniers épisodes</h2>
+                <div class="w-20 h-1 bg-yellow-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for audio in audios %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="{{ vich_uploader_asset(audio, 'coverFile') }}" alt="{{ audio.title }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                            <span class="bg-yellow-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                {{ audio.category.name }}
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black/30">
+                            <button class="bg-white rounded-full p-4 shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <span>{{ audio.publishedAt|date("d M Y") }}</span>
+                            <span class="mx-2">•</span>
+                            <span>{{ audio.duration }} min</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 hover:text-yellow-600 transition-colors">
+                            <a href="{{ path('app_podcast_show', {'slug': audio.slug}) }}">{{ audio.title }}</a>
+                        </h3>
+                        {# <p class="text-gray-600 mb-4 line-clamp-2">{{ audio.description }}</p> #}
+                        <div class="flex items-center">
+                            <img src="images/static/default.png" alt="{{ audio.author.firstname }}" 
+                                 class="w-8 h-8 rounded-full mr-3 object-cover border-2 border-yellow-600">
+                            <span class="text-sm font-medium">{{ audio.author.firstname }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+                <div class="navigation">
+                  {{ knp_pagination_render(audios) }}
+                </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 transition-colors duration-300">
+                    Voir tous les podcasts
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {# Subscribe Section #}
+    <section class="bg-gradient-to-r from-orange-500 to-red-800 rounded-3xl mx-4 md:mx-8 lg:mx-16 my-16 md:my-24 p-12 text-center text-white">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ne manquez aucun épisode</h2>
+            <p class="text-xl text-yellow-100 mb-8 max-w-2xl mx-auto">
+                Abonnez-vous sur votre plateforme préférée pour recevoir nos nouveaux épisodes automatiquement
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <a href="#" class="flex items-center px-6 py-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="w-6 h-6 mr-2 fill-current">
+                        <path d="M25,2C12.318,2,2,12.317,2,25c0,12.682,10.318,23,23,23c12.683,0,23-10.318,23-23C48,12.317,37.683,2,25,2z M32.265,37.446h-3.988v-2.017c0,0-3.005,2.425-5.974,2.425c-3.742,0-5.975-3.055-5.975-6.827c0-3.773,0-10.11,0-10.11h3.984v9.516c0,1.513,0.584,3.107,2.723,3.107c2.208,0,2.701-1.457,2.701-3.107c0-1.649,0-9.516,0-9.516h3.984 c0,0,0,10.11,0,13.376C29.721,33.065,30.526,35.429,32.265,37.446z M15.338,33.421c-1.097,0-1.986-0.889-1.986-1.986 c0-1.097,0.889-1.987,1.986-1.987c1.095,0,1.985,0.889,1.985,1.987C17.323,32.532,16.434,33.421,15.338,33.421z"/>
+                    </svg>
+                    Apple Podcasts
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="w-6 h-6 mr-2 fill-current">
+                        <path d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 25 17 A 3 3 0 0 0 25 11 z M 25 19 C 18.593567 19 14.003273 23 13.271484 23.857422 A 1.0001 1.0001 0 0 0 13 24.599609 L 13 33 A 1.0001 1.0001 0 1 0 15 33 L 15 25.398438 C 15.122398 25.292125 19.065423 21 25 21 C 30.934577 21 34.877602 25.292125 35 25.398438 L 35 33 A 1.0001 1.0001 0 1 0 37 33 L 37 24.599609 A 1.0001 1.0001 0 0 0 36.728516 23.857422 C 35.996727 23 31.406433 19 25 19 z M 19 26 A 1.0001 1.0001 0 0 0 18 27 L 18 32 A 1.0001 1.0001 0 0 0 19 33 L 26 33 A 1.0001 1.0001 0 0 0 27 32 L 27 27 A 1.0001 1.0001 0 0 0 26 26 L 19 26 z M 31 26 A 1.0001 1.0001 0 0 0 30 27 L 30 32 A 1.0001 1.0001 0 0 0 31 33 L 31 33 A 1.0001 1.0001 0 0 0 32 32 L 32 27 A 1.0001 1.0001 0 0 0 31 26 z M 20 28 L 25 28 L 25 31 L 20 31 L 20 28 z M 22.5 35 A 2.5 2.5 0 0 0 20 37.5 A 2.5 2.5 0 0 0 22.5 40 A 2.5 2.5 0 0 0 25 37.5 A 2.5 2.5 0 0 0 22.5 35 z"/>
+                    </svg>
+                    Spotify
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="w-6 h-6 mr-2 fill-current">
+                        <path d="M 46 25 C 46 35.77 39.037 44.752 29.354 47.217 C 28.936 44.461 30.904 38.127 35 35 C 38.658 32.215 42.15 31.441 46 25 z M 4 26 A 1 1 0 0 0 4 28 A 1 1 0 0 0 4 26 z M 5 27 C 5 36.941 13.059 45 23 45 L 23 27 L 5 27 z M 25 27 L 25 45 C 31.053 45 36.489 41.99 39.643 37.377 C 33.232 41.349 27.927 33.613 25 27 z M 17 30 A 1 1 0 0 0 17 32 A 1 1 0 0 0 17 30 z M 11 32 A 1 1 0 0 0 11 34 A 1 1 0 0 0 11 32 z M 8 35 A 1 1 0 0 0 8 37 A 1 1 0 0 0 8 35 z M 14 38 A 1 1 0 0 0 14 40 A 1 1 0 0 0 14 38 z"/>
+                    </svg>
+                    Google Podcasts
+                </a>
+            </div>
+            
+            <div class="max-w-md mx-auto">
+                <h3 class="text-xl font-medium mb-4">Ou recevez nos nouveautés par email</h3>
+                <form class="flex flex-col sm:flex-row gap-3">
+                    <input type="email" placeholder="Votre adresse email" 
+                           class="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-800">
+                    <button type="submit" class="px-6 py-3 bg-white text-yellow-700 font-medium rounded-lg hover:bg-yellow-50 transition-colors duration-300">
+                        S'abonner
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

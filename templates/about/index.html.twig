@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}A propos de nous{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ef4444 100%);
+        }
+        .hover-grow {
+            transition: transform 0.3s ease;
+        }
+        .hover-grow:hover {
+            transform: scale(1.03);
+        }
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: translateY(-3px);
+            opacity: 0.9;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<!-- Hero Section -->
+<div class="gradient-bg text-white py-20">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-5xl font-bold mb-6 animate-fadeIn">À propos de notre plateforme</h1>
+        <p class="text-xl max-w-3xl mx-auto opacity-90 animate-fadeIn delay-100">
+            Nous construisons l'écosystème ultime pour les développeurs Symfony et PHP modernes.
+        </p>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="container mx-auto px-6 py-16 -mt-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {% for stat in stats %}
+        <div class="bg-white rounded-xl shadow-lg p-8 text-center hover-grow transform transition-all duration-300">
+            <div class="text-amber-600 mb-4 flex justify-center">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {% if stat.icon == 'calendar' %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    {% elseif stat.icon == 'users' %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    {% elseif stat.icon == 'file-text' %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    {% elseif stat.icon == 'heart' %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    {% endif %}
+                </svg>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-800 mb-2">{{ stat.value }}</h3>
+            <p class="text-gray-600">{{ stat.label }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Mission Section -->
+<div class="bg-amber-50 py-16">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-amber-800 mb-6">Notre mission</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                Fournir a nos auditeurs les meilleures informations avec des sources sûres, et lutter contre les Fake news pour accélérer leur croissance.
+                Nous croyons en une information partiale, collaboratif et centré sur la transparence.
+            </p>
+            <div class="bg-white rounded-lg shadow-md p-8 inline-block max-w-2xl">
+                <blockquote class="text-gray-700 italic">
+                    "Chez nous, chaque ligne de l'Article compte. Nous éditos non seulement des articles, mais une philosophie d'informer."
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Notre équipe</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for member in teamMembers %}
+            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl shadow-lg overflow-hidden hover-grow">
+                <div class="relative h-48 bg-amber-200 flex justify-center items-center">
+                    <img src="/images/static/users.png" alt="{{ member.name }}" class="w-24 h-24 rounded-full border-4 border-white shadow-lg absolute -bottom-12">
+                </div>
+                <div class="pt-16 pb-8 px-6 text-center">
+                    <h3 class="text-xl font-bold text-gray-800">{{ member.name }}</h3>
+                    <p class="text-amber-600 mb-4">{{ member.role }}</p>
+                    <p class="text-gray-600 mb-6">{{ member.bio | raw }}</p>
+                    <div class="flex justify-center space-x-4">
+                        {% for network in member.social %}
+                        <a href="#" class="social-icon bg-amber-100 text-amber-600 w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-200">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                {% if network == 'twitter' %}
+                                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                                {% elseif network == 'github' %}
+                                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                                {% elseif network == 'linkedin' %}
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+                                {% elseif network == 'dribbble' %}
+                                    <path d="M12 24c6.627 0 12-5.373 12-12s-5.373-12-12-12-12 5.373-12 12 5.373 12 12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.07 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.814zm-8.02-10.376c-.232.81-.286 1.69-.15 2.588-2.06-1.074-4.15-1.408-4.943-1.436-.807-.034-1.913.1-2.643.369.33-2.527 2.374-4.595 4.942-4.933.18-.02.37-.04.56-.04 2.27 0 4.37 1.222 5.23 3.222zm-4.944-4.523c-.762.284-1.4.76-1.924 1.4-.165.2-.347.378-.542.537 2.06.806 3.8 2.294 4.63 4.408.234-.835.384-1.72.444-2.648.003-.07.01-.14.01-.208-.006-2.054-1.62-3.86-3.62-4.49zm-5.008 3.55c-.026.39-.04.78-.04 1.17 0 1.7.7 3.24 1.82 4.35-.36-.78-.6-1.62-.72-2.5-.29-2.24.18-4.47 1.36-6.1-.58.26-1.37.62-2.08 1.21-.35.32-.66.68-.93 1.08-.04.1-.11.19-.16.28-.04.1-.08.21-.12.32-.02.05-.03.08-.03.1-.02.04-.04.09-.05.13l-.01.03zm16.9-1.87c-1.33-.77-2.9-1.24-4.6-1.24-1.6 0-3.1.42-4.4 1.16-.01-.12-.02-.23-.02-.35 0-2.35 1.95-4.27 4.36-4.27 2.4 0 4.36 1.91 4.36 4.27 0 .11-.01.22-.02.34.01-.01.02-.01.02-.02.01-.02.02-.04.02-.06.01-.03.02-.06.02-.09.01-.05.01-.1.02-.15z"></path>
+                                {% elseif network == 'behance' %}
+                                    <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"></path>
+                                {% elseif network == 'instagram' %}
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+                                {% elseif network == 'codepen' %}
+                                    <path d="M24 8.182l-.018-.087-.017-.05c-.01-.025-.018-.05-.03-.074l-.035-.06-.04-.052-.045-.048-.05-.043-.054-.037-.06-.034-.068-.03-.06-.02-.074-.02-.08-.01h-12l-.082.01-.073.02-.06.02-.068.03-.054.037-.05.043-.045.048-.04.052-.035.06c-.01.024-.02.05-.03.074l-.016.05-.02.087v7.636l.02.087.016.05c.01.024.02.05.03.074l.035.06.04.052.045.048.05.043.054.037.06.034.068.03.06.02.074.02.08.01h12l.082-.01.073-.02.06-.02.068-.03.054-.037.05-.043.045-.048.04-.052.035-.06c.01-.024.018-.05.03-.074l.016-.05.02-.087v-7.636zm-4.887 5.636l-3-2-1.113 1.664v1.336h-2v-1.336l-1.113-1.664-3 2 3 2 1.113-1.664v-1.336h2v1.336l1.113 1.664 3-2zm-7-8.818l3 2 1.113-1.664v-1.336h2v1.336l1.113 1.664 3-2-3-2-1.113 1.664v1.336h-2v-1.336l-1.113-1.664-3 2z"></path>
+                                {% endif %}
+                            </svg>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Technologies Section -->
+<div class="py-16 bg-gradient-to-r from-amber-100 to-amber-200">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-amber-800 mb-12">Nos tags les plus utilisées</h2>
+        <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+            {% for tech in technologies %}
+            <span class="px-6 py-3 bg-white text-amber-800 rounded-full shadow-md hover-grow font-medium">
+                {{ tech }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-16 bg-amber-800 text-white">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-6">Prêt à rejoindre notre communauté ?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            Inscrivez-vous dès maintenant pour accéder à toutes nos ressources et faire partie d'un réseau de développeurs passionnés.
+        </p>
+        <div class="flex justify-center space-x-4">
+            <a href="#" class="px-8 py-3 bg-white text-amber-800 rounded-full font-bold hover:bg-amber-100 transition-colors">
+                S'inscrire
+            </a>
+            <a href="#" class="px-8 py-3 border-2 border-white text-white rounded-full font-bold hover:bg-white hover:text-amber-800 transition-colors">
+                En savoir plus
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

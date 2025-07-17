@@ -1,0 +1,61 @@
+{% extends 'admin/dashboard.html.twig' %}
+
+{% block title %}Article{% endblock %}
+
+{% block in_body %}
+<section class="w-full dark:bg-gray-900 py-1 sm:py-2">
+  <div class="mx-auto max-w-screen-2xl lg:px-6">
+      <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+        <div class="flex flex-col p-5">
+            <div class="flex gap-5 up mb-5">
+                <div class="flex flex-1 gap-2 flex-col">
+                    <div class="user flex gap-2 items-center">
+                        <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt="Rounded avatar">
+                        <div class="flex flex-col">
+                            <h2 class="font-semibold">{{ article.author.firstname ~" "~ article.author.lastname }}</h2>
+                            <p class="text-gray-500">Bloguer</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-gray-500">Titre</p>
+                        <h1 class="font-bold">{{ article.title }}<h1>
+                    </div>
+                    <div>
+                        <p class="text-gray-500">Publié le</p>
+                        <h3 class="font-bold">{{ article.publishedAt ? article.publishedAt|date('Y-m-d H:i:s') : '' }}</h3>
+                    </div>
+                    <div>
+                        <p class="text-gray-500">Créer le</p>
+                        <h3 class="font-bold">{{ article.createdAt ? article.createdAt|date('Y-m-d H:i:s') : '' }}</h3>
+                    </div>
+                    <div>
+                        <p class="text-gray-500">Dernier mis à jour</p>
+                        <h3 class="font-bold">{{ article.updatedAt ? article.updatedAt|date('Y-m-d H:i:s') : '' }}</h3>
+                    </div>
+                </div>
+                <div class="flex-2">
+                    <div class="font-bold">Contenus </div>
+                    <p> 
+                        {{ article.content|raw }}
+                    </p>
+                </div>
+            </div>
+            <div class="flex down justify-between">
+                <div class="flex gap-5">
+                    <a type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800" 
+                        href="{{ path('app_article_edit', {'id': article.id}) }}">
+                        <svg class="w-6 h-6 text-gray-100 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                        </svg>
+                        Modifier
+                    </a>
+                    <a type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium border border-yellow-700 text-gray-700 rounded-lg bg-yellow-100 hover:bg-yellow-300 focus:ring-4 focus:ring-yellow-200 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800" 
+                        href="{{ path('app_article_index') }}">Voir la liste</a>
+                </div>
+                 {{ include('admin/article/_delete_form.html.twig') }}
+            </div>
+        </div>
+      </div>
+  </div>
+</section>
+{% endblock %}

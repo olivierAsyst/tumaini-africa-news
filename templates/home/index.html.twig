@@ -1,0 +1,830 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TUMAINI AFRICA NEWS | {{ controller_name }}{% endblock %}
+
+{% block body %}
+
+<!-- Modal (amélioré avec animations et meilleure accessibilité) -->
+<div id="advertise-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50 backdrop-blur-sm transition-opacity duration-300">
+    <div class="relative p-4 w-full max-w-2xl max-h-full animate-fadeIn">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-xl transform transition-all duration-300 scale-95 group-hover:scale-100">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t bg-yellow-700">
+                <h3 id="modal-title" class="text-xl font-semibold text-white tracking-wide"></h3>
+                <button type="button" class="text-white bg-transparent hover:bg-yellow-800 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-colors duration-200" data-modal-hide="advertise-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div id="modal-body" class="p-4 md:p-5 space-y-4 text-gray-700 leading-relaxed">
+            </div>
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+                <button data-modal-hide="advertise-modal" type="button" class="text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-200 shadow-md hover:shadow-lg">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Carousel de publicités (amélioré avec ombres et transitions) -->
+<div class="carousel-fixed-container relative max-w-4xl mx-auto my-4 overflow-hidden rounded-xl shadow-lg">
+  <div id="fixedCarousel" class="carousel-fixed-slides flex w-full transition-transform duration-500 ease-in-out">    
+    {% for i in 0..2 %}
+      <div class="rounded-xl carousel-fixed-item flex-shrink-0 w-full h-[200px] md:h-[250px] overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+        {% if i < advertises_count and last_advertise[i] %}
+          {% set imageUrl = vich_uploader_asset(last_advertise[i], 'imageFile') %}
+          <div class="w-full h-full bg-cover bg-center group" style="background-image: url('{{ imageUrl ? asset(imageUrl) : asset('images/static/default.png') }}')">
+            <div class="w-full h-full p-4 bg-black/40 flex flex-col justify-between transition-all duration-300 group-hover:bg-black/50">
+              <span class="inline-block bg-violet-800 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1 rounded-xl uppercase transition-all duration-300 self-start shadow-md">
+                PUBLICITE
+              </span>
+              <div class="text-white">
+                <p class="text-sm font-bold tracking-wide">{{ last_advertise[i].company ? last_advertise[i].company : '' }}</p>
+                <h3 class="text-xl font-bold"> 
+                  <a onclick="showAdvertiseModal({{ last_advertise[i].id|json_encode }})" href="#" class="hover:text-yellow-300 transition-colors duration-200">
+                    {{ last_advertise[i].title }}, 
+                    <span class="text-sm bg-yellow-700 rounded-2xl p-1 px-2 inline-block hover:bg-yellow-600 transition-colors duration-200">clique ici</span>
+                  </a>
+                </h3>
+                <div class="flex gap-2 flex-wrap mt-1">
+                  {% if last_advertise[i].phoneNumber %}
+                    <p class="text-sm bg-black/30 px-2 py-1 rounded-lg">{{ last_advertise[i].phoneNumber }}</p>
+                  {% endif %}
+                  {% if last_advertise[i].email %}
+                    <p class="text-sm bg-black/30 px-2 py-1 rounded-lg">{{ last_advertise[i].email }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="w-full h-full bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
+            <div class="text-center p-4">
+              <h3 class="text-2xl font-bold text-gray-800 mb-2">TUMAINI AFRICA NEWS</h3>
+              <p class="text-gray-600">Aucune publicité disponible</p>
+              {% if i < advertises_count and last_advertise[i] %}
+                <p class="text-xs text-gray-500 mt-1">(Cette annonce n'a pas d'image)</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Indicators -->
+  <div class="flex justify-center m-2 space-x-2">
+    <button class="carousel-fixed-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500" data-index="0"></button>
+    <button class="carousel-fixed-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500" data-index="1"></button>
+    <button class="carousel-fixed-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500" data-index="2"></button>
+  </div>
+</div>
+
+<!-- Section principale -->
+<section class="bg-gradient-to-r from-gray-50 to-gray-100 dark:bg-gray-900">
+    <div class="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-6 lg:px-6">
+      <div class="flex gap-6 flex-col lg:flex-row">
+        <!-- Colonne principale -->
+        <div class="flex-2/2 p-2 w-full lg:w-2/3">
+          <div class="flex flex-col gap-6">
+            <!-- Carousel des articles urgents -->
+            <div class="relative w-full overflow-hidden rounded-2xl shadow-xl">
+              <div class="flex transition-transform duration-500 ease-in-out" style="transform: translateX(0%);" id="carousel-wrapper">
+                {% for article in urgents %}
+                <div class="relative w-full flex-shrink-0 group">
+                  <img
+                    src="{{ vich_uploader_asset(article, 'imageFile')|default("images/static/default.png") }}"
+                    alt="{{ article.title }}"
+                    class="w-full h-[550px] object-cover rounded-2xl transform transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div class="rounded-2xl absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/70 to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 right-6 text-white">
+                    <span class="inline-block bg-red-600 text-xs font-semibold px-3 py-1 rounded-xl mb-2 uppercase tracking-wide shadow-md">
+                      {{ article.category.name }}
+                    </span>
+                    <h1 class="text-2xl md:text-3xl font-bold leading-tight hover:text-orange-400 transition-colors duration-300">
+                      <a href="{{ path('app_single_article_public', {'slug': article.slug}) }}">
+                        {{ article.title }}
+                      </a>
+                    </h1>
+                    <p class="text-xs opacity-80 mt-2">par {{ article.author.firstName }} - {{ article.publishedAt|date('d/m/Y à H:i') }}</p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <button id="prev" class="absolute top-1/2 left-4 -translate-y-1/2 bg-black/60 hover:bg-black text-white rounded-full p-2 shadow-lg transition-all duration-300 hover:scale-110">
+                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+                </svg>
+              </button>
+              <button id="next" class="absolute top-1/2 right-4 -translate-y-1/2 bg-black/60 hover:bg-black text-white rounded-full p-2 shadow-lg transition-all duration-300 hover:scale-110">
+                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Dernières nouvelles -->
+          <div class="flex flex-col lg:flex-row gap-6 items-start rounded-xl w-full h-fit p-6 bg-white shadow-lg">
+              <!-- Dernières nouvelles -->
+              <div class="flex-1 flex flex-col items-start w-full">
+                  <p class="text-indigo-950 text-3xl md:text-4xl font-bold mb-4 border-b-2 border-orange-500 pb-2">Dernières nouvelles</p>
+                  <div class="w-full">
+                      <a href="{{ path('app_single_article_public', {'slug': lastFirst.slug}) }}" alt="{{ lastFirst.title }}" class="group block">
+                          <div class="relative w-full h-48 md:h-64 rounded-lg overflow-hidden mb-4">
+                              <img class="w-full h-full object-cover transition-all duration-500 ease-in-out group-hover:scale-105"
+                                  src="{{ vich_uploader_asset(lastFirst, 'imageFile')|default("images/static/default.png") }}"
+                                  alt="{{ lastFirst.title }}">
+                          </div>
+                          <h1 class="text-2xl text-start font-bold text-indigo-950 hover:text-orange-600 transition-colors duration-300 leading-tight">
+                              {{ lastFirst.title }}
+                          </h1>
+                          <p class="text-left text-sm text-gray-600 mt-2 py-2">par {{ lastFirst.author.firstname }} - {{ lastFirst.publishedAt|date('d M Y à H:s') }}</p>
+                          <p class="text-left text-gray-700 leading-relaxed">
+                              {{ lastFirst.content | slice(0, 150) | raw }} ...
+                          </p>
+                          <button class="mt-3 text-orange-600 hover:text-orange-800 font-medium transition-colors duration-200">
+                              Lire la suite →
+                          </button>
+                      </a>
+                  </div>
+              </div>
+              
+              <!-- Catégories et articles -->
+              <div class="flex-1 w-full">
+                  <div class="top flex justify-end mb-4">
+                      <ul class="flex flex-wrap gap-2 text-indigo-950 font-semibold">
+                          {% for category in categories %}
+                              <li class="{{ selected_category and selected_category.id == category.id ? 'text-orange-700' : '' }}">
+                                  <a href="{{ path('app_home', {'category': category.slug}) }}"
+                                    class="uppercase text-sm hover:text-orange-700 transition-colors duration-200 px-3 py-1 rounded-lg {{ selected_category and selected_category.id == category.id ? 'bg-orange-100' : 'hover:bg-gray-100' }}" 
+                                    data-category-slug="{{ category.slug }}">
+                                    {{ category.name }}
+                                  </a>
+                              </li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+                  
+                  <div class="flex flex-col gap-4 mt-4 text-left">
+                      {% for article in category_articles %}
+                          <a href="{{ path('app_single_article_public', {'slug': article.slug}) }}" class="flex flex-col sm:flex-row gap-4 group">
+                              <div class="relative flex-shrink-0 w-full sm:w-32 h-24 rounded-lg overflow-hidden">
+                                  <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                      src="{{ vich_uploader_asset(article, 'imageFile')|default("images/static/default.png") }}"
+                                      alt="{{ article.title }}">
+                              </div>
+                              <div class="flex-1">
+                                  <p class="text-xs text-violet-700 font-bold uppercase tracking-wide">{{ article.category.name }}</p>
+                                  <h5 class="mb-1 text-sm font-bold tracking-tight text-gray-900 hover:text-orange-700 cursor-pointer transition-colors duration-200 mt-1">
+                                      {{ article.title }}
+                                  </h5>
+                                  <div class="text-xs text-gray-500">{{ article.publishedAt|date('d M Y') }}</div>
+                              </div>
+                          </a>
+                      {% endfor %}
+                  </div>
+              </div>
+          </div>
+          </div>
+          
+          <!-- Publicité du milieu -->
+          {% if middle_advertise %}
+              <div class="my-6 p-6 bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-600 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                  <h3 class="text-xl font-bold text-yellow-800 mb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                    </svg>
+                    Publicité spéciale
+                  </h3>
+                  <div class="mt-4 flex flex-col md:flex-row gap-6 items-center">
+                      {% if vich_uploader_asset(middle_advertise, 'imageFile') %}
+                          <img src="{{ asset(vich_uploader_asset(middle_advertise, 'imageFile')) }}" 
+                              alt="{{ middle_advertise.title }}" 
+                              class="w-full md:w-1/3 h-auto object-cover rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105">
+                      {% endif %}
+                      <div class="flex-1">
+                          <h4 class="text-lg font-semibold text-gray-800">{{ middle_advertise.title }}</h4>
+                          <p class="text-gray-700 mt-2 leading-relaxed">{{ middle_advertise.description }}</p>
+                          <div class="mt-4 flex flex-wrap gap-4">
+                              {% if middle_advertise.phoneNumber %}
+                                  <a href="tel:{{ middle_advertise.phoneNumber }}" class="flex items-center text-yellow-700 hover:text-yellow-800 transition-colors duration-200">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                      </svg>
+                                      {{ middle_advertise.phoneNumber }}
+                                  </a>
+                              {% endif %}
+                              {% if middle_advertise.email %}
+                                  <a href="mailto:{{ middle_advertise.email }}" class="flex items-center text-yellow-700 hover:text-yellow-800 transition-colors duration-200">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                      </svg>
+                                      {{ middle_advertise.email }}
+                                  </a>
+                              {% endif %}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          {% else %}
+          <div class="relative w-full h-[133px] overflow-hidden my-5 rounded-lg bg-cover bg-center bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-500 hover:shadow-lg">
+              <div class="absolute inset-0 bg-black/20 flex flex-col items-center justify-center p-4">
+                <span class="inline-block bg-white text-indigo-800 text-xs font-bold px-3 py-1 rounded-xl uppercase mb-2 shadow-md">
+                      PUBLICITE
+                </span>
+                <div class="text-center">
+                  <a href="#" class="bg-yellow-400 hover:bg-orange-500 text-gray-900 font-semibold px-4 py-2 rounded-xl uppercase inline-block transition-colors duration-300 shadow-lg">
+                    AUCUNE PUBLICITE DISPONIBLE
+                  </a>
+                </div>
+              </div>
+          </div>
+          {% endif %}
+        </div>
+        
+        <!-- Sidebar droite -->
+        <div class="w-full lg:w-1/3 flex flex-col gap-6 text-left">
+          <!-- Second article -->
+          <div class="second relative w-full flex-shrink-0 overflow-hidden rounded-2xl shadow-lg group">
+              <img
+                    src="{{ vich_uploader_asset(lastSecond, 'imageFile')|default("images/static/default.png")}}"
+                    alt="{{ lastSecond.title }}"
+                    class="w-full h-64 object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div class="rounded-2xl absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
+                  <div class="absolute bottom-4 left-4 right-4 text-white">
+                    <span class="inline-block bg-red-600 text-xs font-semibold px-3 py-1 rounded-xl mb-2 uppercase tracking-wide">
+                      {{ lastSecond.category.name }}
+                    </span>
+                    <h2 class="text-lg font-bold leading-tight hover:text-orange-400 transition-colors duration-300">
+                      <a href="{{ path('app_single_article_public', {'slug': lastSecond.slug}) }}">
+                        {{ lastSecond.title }}
+                      </a>
+                    </h2>
+                    <p class="text-xs opacity-80 mt-1">par {{ lastSecond.author.firstname }} - {{ lastSecond.publishedAt|date('d M Y')  }}</p>
+                  </div>
+          </div>
+          
+          <!-- Troisième article -->
+          <div class="troisieme relative w-full flex-shrink-0 overflow-hidden rounded-2xl shadow-lg group">
+              <img
+                    src="{{ vich_uploader_asset(lastThird, 'imageFile')|default("images/static/default.png")}}"
+                    alt="{{ lastThird.title }}"
+                    class="w-full h-64 object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div class="rounded-2xl absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
+                  <div class="absolute bottom-4 left-4 right-4 text-white">
+                    <span class="inline-block bg-red-600 text-xs font-semibold px-3 py-1 rounded-xl mb-2 uppercase tracking-wide">
+                      {{ lastThird.category.name }}
+                    </span>
+                    <h2 class="text-lg font-bold leading-tight hover:text-orange-400 transition-colors duration-300">
+                      <a href="{{ path('app_single_article_public', {'slug': lastThird.slug}) }}">
+                        {{ lastThird.title }}
+                      </a>
+                    </h2>
+                    <p class="text-xs opacity-80 mt-1">par {{ lastThird.author.firstname }} - {{ lastThird.publishedAt|date('d M Y') }}</p>
+                  </div>
+          </div>
+
+          <!-- Articles les plus vus -->
+          <div class="viewed text-left bg-white shadow-lg rounded-xl p-2">
+            <div class="title flex items-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <h2 class="text-xl font-semibold text-indigo-950">Articles les plus visionnés</h2>
+            </div>
+            <div class="relative w-full flex-shrink-0 rounded-xl overflow-hidden shadow-md group">
+              <img
+                    src="{{ vich_uploader_asset(first_viewed, 'imageFile')|default("images/static/default.png")}}"
+                    alt="{{ first_viewed.title }}"
+                    class="w-full h-80 object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div class="rounded-xl absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
+                  <div class="absolute bottom-4 left-4 right-4 text-white">
+                    <span class="inline-block bg-red-600 text-xs font-semibold px-3 py-1 rounded-xl mb-2 uppercase tracking-wide">
+                      {{ first_viewed.category.name }}
+                    </span>
+                    <h2 class="text-lg font-bold leading-tight hover:text-orange-400 transition-colors duration-300">
+                      <a href="{{ path('app_single_article_public', {'slug': first_viewed.slug}) }}">{{ first_viewed.title }}</a>
+                    </h2>
+                    <div class="flex justify-between items-center mt-1">
+                      <p class="text-xs opacity-80">par {{ first_viewed.author.firstname }} - {{ first_viewed.publishedAt|date('d/m/Y à H:i') }}<p>
+                      <p class="text-xs bg-black/40 px-2 py-1 rounded-full flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        {{ first_viewed.viewCount }} Vue(s)
+                      </p>
+                    </div>
+                  </div>
+            </div>
+            <div class="viewd-less pt-6">
+              <div>
+                <div class="flex flex-col gap-4">
+                {% for item in most_viewed %}
+                {% if not loop.first %}
+                  <a href="{{ path('app_single_article_public', {'slug': item.slug}) }}" class="flex items-center group transition-all duration-200 hover:bg-gray-50 p-2 rounded-lg">
+                      <div class="w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg shadow">
+                        <img src="{{ vich_uploader_asset(item, 'imageFile')|default("images/static/default.png")}}" alt="{{ item.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                      </div>
+                      <div class="ml-4 flex-1">
+                        <h3 class="text-sm font-semibold text-indigo-950 hover:text-orange-600 transition-colors duration-200 line-clamp-2">
+                          {{ item.title }}
+                        </h3>
+                        <div class="flex justify-between mt-1">
+                          <p class="text-xs text-gray-600">{{ item.publishedAt|date('d/m/Y') }}</p>
+                          <p class="text-xs text-gray-600 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            {{ item.viewCount }}
+                          </p>
+                        </div>
+                      </div>
+                  </a>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<!-- Section tendances -->
+<section class="bg-gradient-to-r from-gray-100 to-gray-200 dark:bg-gray-900 p-6">
+    <div class="flex text-left gap-5 max-w-screen-xl lg:py-8 lg:pt-2 lg:px-3 mx-auto">
+      <div class="flex-2 bg-white rounded-2xl shadow-lg p-6">
+        <div class="max-w-5xl mx-auto overflow-auto">
+          <h4 class="text-2xl font-bold mb-6 text-indigo-950 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            Les plus visités cette semaine
+          </h4>
+          <div class="relative">
+            <button id="prevBtn" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white text-gray-800 rounded-full p-2 shadow-lg hover:bg-gray-100 z-10 transition-all duration-300 hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <button id="nextBtn" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white text-gray-800 rounded-full p-2 shadow-lg hover:bg-gray-100 z-10 transition-all duration-300 hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </button>
+            <div id="carousel" class="flex space-x-6 overflow-x-auto scroll-smooth scrollbar-hide px-5 py-4">
+              {% for article in trending %}
+              <article class="w-[200px] min-w-[240px] flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 group">
+                <div class="overflow-hidden rounded-t-xl">
+                  <img src="{{ vich_uploader_asset(article, 'imageFile')|default("images/static/default.png") }}" alt="{{ article.title }}" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="p-4">
+                  <h5 class="text-lg font-semibold mb-2 text-indigo-950 hover:text-orange-600 cursor-pointer transition-colors duration-200 line-clamp-2">
+                    <a href="{{ path('app_single_article_public', {'slug': article.slug}) }}">{{ article.title }}</a>
+                  </h5>
+                  <div class="flex items-center text-sm text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    {{ article.viewCount }} Vue(s)
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<!-- Section catégories -->
+<section class="bg-gradient-to-r from-gray-50 to-gray-100 dark:bg-gray-900 p-6">
+  <div class="flex flex-col text-left gap-5 max-w-screen-xl lg:py-8 lg:pt-2 lg:px-3 mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold mb-6 text-indigo-950 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+      Parcourir par catégorie
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {% for category in all_categories.getCategories() %}
+          {% if category.articles|length > 0 %}
+            <a href="{{ path('app_category_public', {'slug': category.slug}) }}" class="group transform transition-all duration-300 hover:-translate-y-1">
+                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center h-full transition-all duration-300 group-hover:shadow-lg group-hover:border-t-4 group-hover:border-orange-500">
+                    <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4 text-primary group-hover:bg-orange-500 group-hover:text-white transition-colors duration-300 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            {% if loop.index == 1 %}
+                                {# Politique - Building icon #}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            {% elseif loop.index == 2 %}
+                                {# Économie - Chart icon #}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            {% elseif loop.index == 3 %}
+                                {# Culture - Book icon #}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            {% elseif loop.index == 4 %}
+                                {# Sports - Trophy icon #}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            {% elseif loop.index == 5 %}
+                                {# Technologie - Chip icon #}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                            {% else %}
+                                {# Environnement - Leaf icon #}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            {% endif %}
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 group-hover:text-orange-600 mb-2 transition-colors duration-300">{{ category.name }}</h3>
+                    <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">{{ category.articles|length }} Articles</span>
+                </div>
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+{% block js %}
+<script>
+// Fonction pour afficher la modal avec les données
+function showAdvertiseModal(advertiseId) {
+    // Trouver la publicité correspondante
+    const advertise = advertisesData.find(a => a.id === advertiseId);
+    
+    if (advertise) {
+        // Mettre à jour le titre
+        document.getElementById('modal-title').textContent = advertise.title;
+        
+        // Construire le contenu du body
+        let modalContent = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                    ${advertise.description ? `<p class="text-gray-700">${advertise.description}</p>` : ''}
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900">Entreprise</h4>
+                    <p class="text-gray-600">${advertise.company || 'Non renseigné'}</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900">Contact</h4>
+                    ${advertise.phoneNumber ? `<p class="text-gray-600">Tél: ${advertise.phoneNumber}</p>` : ''}
+                    ${advertise.email ? `<p class="text-gray-600">Email: ${advertise.email}</p>` : ''}
+                </div>
+                
+                ${advertise.imageUrl ? `
+                <div class="md:col-span-2">
+                    <img src="${advertise.imageUrl}" alt="Publicité ${advertise.title}" class="w-full h-auto rounded-lg">
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        document.getElementById('modal-body').innerHTML = modalContent;
+        
+        // Afficher la modal
+        const modal = new Modal(document.getElementById('advertise-modal'));
+        modal.show();
+    }
+}
+
+// Initialiser les données (à adapter selon votre contexte)
+const advertisesData = [
+    {% for advertise in last_advertise %}
+    {
+        id: {{ advertise.id }},
+        title: "{{ advertise.title|escape('js') }}",
+        description: "{{ advertise.description|escape('js') }}",
+        company: "{{ advertise.company|escape('js') }}",
+        phoneNumber: "{{ advertise.phoneNumber|escape('js') }}",
+        email: "{{ advertise.email|escape('js') }}",
+        imageUrl: "{{ vich_uploader_asset(advertise, 'imageFile') ? asset(vich_uploader_asset(advertise, 'imageFile')) : '' }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const carousel = document.getElementById('fixedCarousel');
+  const items = document.querySelectorAll('.carousel-fixed-item');
+  const indicators = document.querySelectorAll('.carousel-fixed-indicator');
+  
+  let currentIndex = 0;
+  const itemCount = items.length;
+  
+  // Initialize carousel width
+  function initCarousel() {
+    const itemWidth = carousel.clientWidth;
+    items.forEach(item => {
+      item.style.width = `${itemWidth}px`;
+    });
+    carousel.style.width = `${itemWidth * itemCount}px`;
+  }
+  
+  // Update carousel position
+  function updateCarousel() {
+    const itemWidth = carousel.clientWidth / itemCount;
+    const offset = -currentIndex * itemWidth;
+    carousel.style.transform = `translateX(${offset}px)`;
+    
+    // Update indicators
+    indicators.forEach((indicator, index) => {
+      if (index === currentIndex) {
+        indicator.classList.add('bg-gray-600', 'w-3');
+        indicator.classList.remove('bg-gray-300', 'w-2');
+      } else {
+        indicator.classList.remove('bg-gray-600', 'w-3');
+        indicator.classList.add('bg-gray-300', 'w-2');
+      }
+    });
+  }
+  
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % itemCount;
+    updateCarousel();
+  }
+  
+  // Auto-rotate every 5 seconds
+  let autoSlide = setInterval(nextSlide, 10000);
+  
+  function resetAutoSlide() {
+    clearInterval(autoSlide);
+    autoSlide = setInterval(nextSlide, 10000);
+  }
+  
+  indicators.forEach(indicator => {
+    indicator.addEventListener('click', () => {
+      currentIndex = parseInt(indicator.getAttribute('data-index'));
+      updateCarousel();
+      resetAutoSlide();
+    });
+  });
+  
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    initCarousel();
+    updateCarousel();
+  });
+  
+  // Initialize
+  initCarousel();
+  updateCarousel();
+});
+</script>
+
+<script>
+  const wrapper = document.getElementById('carousel-wrapper');
+  const slides = wrapper.children;
+  const totalSlides = slides.length;
+  let index = 0;
+
+  function showSlide(i) {
+    wrapper.style.transform = `translateX(-${i * 100}%)`;
+
+    // Animation texte : enlever puis remettre la classe d'animation pour relancer l'effet
+    for (let slide of slides) {
+      const textDiv = slide.querySelector('.slide-text');
+      textDiv.classList.remove('animate-fade-slide-up');
+      // Forcer reflow pour reset animation
+      void textDiv.offsetWidth;
+    }
+    // Ajouter la classe sur la slide active
+    const activeText = slides[i].querySelector('.slide-text');
+    activeText.classList.add('animate-fade-slide-up');
+  }
+
+  // Manually go to next slide
+  document.getElementById('next').addEventListener('click', () => {
+    index = (index + 1) % totalSlides;
+    showSlide(index);
+  });
+
+  // Manually go to prev slide
+  document.getElementById('prev').addEventListener('click', () => {
+    index = (index - 1 + totalSlides) % totalSlides;
+    showSlide(index);
+  });
+
+  // Autoplay every 3 seconds (3000 ms)
+  setInterval(() => {
+    index = (index + 1) % totalSlides;
+    showSlide(index);
+  }, 5000);
+
+  // Initial animation on first slide
+  showSlide(0);
+</script>
+<script>
+  const carousel = document.getElementById('carousel');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  const scrollAmount = 245 + 24; // largeur article + espace
+
+  prevBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
+
+  nextBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
+
+  // Auto-scroll infini (boucle)
+  let autoScrollInterval = setInterval(() => {
+    if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
+      carousel.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }, 4000);
+
+  // Pause auto-scroll au hover
+  carousel.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
+  carousel.addEventListener('mouseleave', () => {
+    autoScrollInterval = setInterval(() => {
+      if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth) {
+        carousel.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }, 4000);
+  });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const player = document.getElementById('podcast-player');
+    const playBtn = document.getElementById('play-btn');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const progressBar = document.getElementById('progress-bar');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    const volumeControl = document.getElementById('volume-control');
+    const muteBtn = document.getElementById('mute-btn');
+    const volumeOn = document.getElementById('volume-on');
+    const volumeOff = document.getElementById('volume-off');
+    const skipForward = document.getElementById('skip-forward');
+    const skipBackward = document.getElementById('skip-backward');
+    const speedBtn = document.getElementById('speed-btn');
+    const shareBtn = document.getElementById('share-btn');
+    const sharePanel = document.getElementById('share-panel');
+    const copyUrlBtn = document.getElementById('copy-url');
+    const shareUrl = document.getElementById('share-url');
+
+    // Format time in MM:SS
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // Update progress bar and time
+    function updateProgress() {
+        const currentTime = player.currentTime;
+        const duration = player.duration || 1;
+        const progressPercent = (currentTime / duration) * 100;
+        progressBar.value = progressPercent;
+        currentTimeEl.textContent = formatTime(currentTime);
+    }
+
+    // Set initial state
+    function initPlayer() {
+        // Hide native controls to use our custom ones
+        player.controls = false;
+        
+        // Set initial icons state
+        if (player.paused) {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        } else {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+        }
+        
+        // Set initial volume
+        player.volume = volumeControl.value;
+        player.muted = false;
+    }
+
+    // Set duration when metadata is loaded
+    player.addEventListener('loadedmetadata', function() {
+        durationEl.textContent = formatTime(player.duration);
+    });
+
+    // Update time immediately when audio can play
+    player.addEventListener('canplay', function() {
+        updateProgress();
+    });
+
+    // Play/pause toggle
+    function togglePlayPause() {
+        if (player.paused) {
+            player.play()
+                .then(() => {
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Playback failed:', error);
+                    // Show error to user if needed
+                    alert('La lecture a échoué : ' + error.message);
+                });
+        } else {
+            player.pause();
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        }
+    }
+
+    playBtn.addEventListener('click', togglePlayPause);
+    
+    // Also allow clicking directly on the audio element
+    player.addEventListener('click', togglePlayPause);
+
+    // Update progress continuously
+    player.addEventListener('timeupdate', updateProgress);
+
+    // Seek when progress bar is clicked
+    progressBar.addEventListener('input', function() {
+        const seekTime = (player.duration / 100) * progressBar.value;
+        player.currentTime = seekTime;
+    });
+
+    // Volume control
+    volumeControl.addEventListener('input', function() {
+        player.volume = volumeControl.value;
+        if (player.volume > 0) {
+            volumeOn.classList.remove('hidden');
+            volumeOff.classList.add('hidden');
+            player.muted = false;
+        }
+    });
+
+    // Mute toggle
+    muteBtn.addEventListener('click', function() {
+        player.muted = !player.muted;
+        if (player.muted) {
+            volumeOn.classList.add('hidden');
+            volumeOff.classList.remove('hidden');
+        } else {
+            volumeOn.classList.remove('hidden');
+            volumeOff.classList.add('hidden');
+        }
+    });
+
+    // Skip forward 15 seconds
+    skipForward.addEventListener('click', function() {
+        player.currentTime = Math.min(player.currentTime + 15, player.duration);
+    });
+
+    // Skip backward 15 seconds
+    skipBackward.addEventListener('click', function() {
+        player.currentTime = Math.max(player.currentTime - 15, 0);
+    });
+
+    // Playback speed control
+    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    let currentSpeedIndex = 2; // Default 1x
+
+    speedBtn.addEventListener('click', function() {
+        currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+        const newSpeed = speeds[currentSpeedIndex];
+        player.playbackRate = newSpeed;
+        speedBtn.textContent = newSpeed + 'x';
+    });
+
+    // Share panel toggle
+    shareBtn.addEventListener('click', function() {
+        sharePanel.classList.toggle('hidden');
+    });
+
+    // Copy URL to clipboard (modern approach)
+    copyUrlBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(shareUrl.value)
+            .then(() => {
+                const originalText = copyUrlBtn.textContent;
+                copyUrlBtn.textContent = 'Copié!';
+                setTimeout(() => {
+                    copyUrlBtn.textContent = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+    });
+
+    // Initialize player
+    initPlayer();
+});
+</script>
+
+{% endblock %}

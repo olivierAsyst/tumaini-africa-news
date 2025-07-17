@@ -1,0 +1,220 @@
+/**
+ * Custom CSS for News Website Footer
+ * Enhances Tailwind CSS with additional hover effects and animations
+ */
+
+/* Footer Links Hover Effects */
+.footer-link {
+    @apply text-gray-400 hover:text-orange-500 transition-all duration-300 relative;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f97316, #ea580c);
+    transition: width 0.3s ease-in-out;
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+.footer-link:hover {
+    transform: translateX(4px);
+}
+
+/* Social Media Links */
+.social-link {
+    @apply w-10 h-10 bg-gray-800 text-gray-400 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-orange-500 hover:text-white;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.social-link:hover::before {
+    left: 100%;
+}
+
+.social-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+}
+
+/* Footer Logo Animation */
+.footer-logo {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.footer-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Newsletter Form Enhancements */
+.newsletter-form input[type="email"] {
+    transition: all 0.3s ease;
+}
+
+.newsletter-form input[type="email"]:focus {
+    background-color: #1f2937;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.newsletter-form button {
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-form button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.newsletter-form button:hover::before {
+    left: 100%;
+}
+
+/* Footer Section Hover Effects */
+.footer-section {
+    transition: transform 0.3s ease;
+}
+
+.footer-section:hover {
+    transform: translateY(-2px);
+}
+
+/* Responsive Text Scaling */
+@media (max-width: 768px) {
+    .footer-link {
+        font-size: 0.9rem;
+    }
+    
+    .social-link {
+        @apply w-8 h-8;
+    }
+}
+
+/* Custom Scrollbar for Better UX */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ea580c;
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer-section {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.footer-section:nth-child(1) { animation-delay: 0.1s; }
+.footer-section:nth-child(2) { animation-delay: 0.2s; }
+.footer-section:nth-child(3) { animation-delay: 0.3s; }
+.footer-section:nth-child(4) { animation-delay: 0.4s; }
+
+/* Accessibility Improvements */
+.footer-link:focus,
+.social-link:focus,
+.newsletter-form input:focus,
+.newsletter-form button:focus {
+    outline: 2px solid #f97316;
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    footer {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .social-link,
+    .newsletter-form {
+        display: none;
+    }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+    .footer-link:focus {
+        outline-color: #fb923c;
+    }
+}
+
+/* Motion reduction for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .footer-link,
+    .social-link,
+    .footer-section,
+    .newsletter-form input,
+    .newsletter-form button {
+        transition: none;
+        animation: none;
+    }
+    
+    .footer-link:hover {
+        transform: none;
+    }
+    
+    .social-link:hover {
+        transform: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .footer-link {
+        color: #ffffff;
+    }
+    
+    .footer-link:hover {
+        color: #ffaa00;
+    }
+    
+    .social-link {
+        border: 2px solid #ffffff;
+    }
+}

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="relative flex flex-col items-center justify-center h-screen overflow-hidden">
+    <div class="w-full p-6 bg-white border-t-4 border-primary rounded-md shadow-md border-top lg:max-w-lg">
+    <div>
+        <div class="avatar flex justify-center">
+            <div class="w-24 rounded-full">
+                <img src="images/static/tan-logos.png" alt="TUNAMAINI AFRICA MEDIA LOGO"/>
+            </div>
+        </div>
+        <h1 class="text-3xl font-semibold text-center text-primary pt-5">CONNEXION</h1>
+    </div>
+        <form method="post" class="space-y-4">
+            {% if error %}
+                <div role="alert" class="flex gap-5 alert alert-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-red-950">{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+                </div>
+            {% endif %}
+            {% if app.user %}
+                <div role="alert" class="alert alert-success alert-soft">
+                <span>{{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Deconexion</a></span>
+                </div>
+            {% endif %}
+            <div>
+                <label class="label">
+                    <span class="text-base label-text py-2" for="username">Email</span>
+                </label>
+                <input type="email" value="{{ last_username }}" name="_username" id="username" class="w-full input input-primary" autocomplete="email" required autofocus>
+            </div>
+            <div>
+                <label class="label">
+                    <span class="text-base label-text py-2" for="password">Mot de passe</span>
+                </label>
+                <input type="password" name="_password" id="password" class="w-full input input-primary" autocomplete="current-password" required>
+                <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+                <div class="flex gap-2 py-5">
+                    <input type="checkbox" name="_remember_me" id="_remember_me" class="checkbox checkbox-primary" />
+                    {# <input type="checkbox" name="_remember_me" id="_remember_me"> #}
+                    Se souvenir de moi
+                </div>
+           
+            </div>
+            <div class="flex flex-col gap-2">
+                <button class="btn btn-block btn-primary" type="submit">Connexion</button>
+                <a href="#" class="text-xs text-gray-600 hover:underline hover:text-primary">Vous avez oublie le mot de passe ?</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

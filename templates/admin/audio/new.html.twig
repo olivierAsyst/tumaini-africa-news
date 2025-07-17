@@ -1,0 +1,157 @@
+{% extends 'admin/dashboard.html.twig' %}
+
+{% block title %}Nouveau PODCAST{% endblock %}
+
+{% block in_body %}
+<section class="w-full dark:bg-gray-900 py-1 sm:py-2">
+  <div class="mx-auto max-w-screen-2xl lg:px-6">
+      <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+        <h5 class="text-center mb-2 text-2xl font-semibold dark:text-white">
+            <span class="bg-gradient-to-r from-orange-500 to-red-800 text-transparent bg-clip-text">Créer un nouveau podcast</span>
+        </h5>
+        <section class="bg-white dark:bg-gray-900">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            {{ form_start(form) }}
+                <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.title, 'Titre de l\'Audio', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-600 focus:border-yellow-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow-500 dark:focus:border-yellow-500'}}) }}
+                        <div class="mt-1 text-sm text-red-600 dark:text-red-500">
+                            {{ form_errors(form.title) }}
+                        </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow-500 dark:focus:border-yellow-500'}}) }}
+                        <div class="mt-1 text-sm text-red-600 dark:text-red-500">
+                            {{ form_errors(form.description) }}
+                        </div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.audioFile, 'Charger l\'audio', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.audioFile, {'attr': {'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'}}) }}
+                        <div class="mt-1 text-sm text-red-600 dark:text-red-500">
+                            {{ form_errors(form.audioFile) }}
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">MP3, WAV, OGG (MAX. 50MB)</p>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Couverture de l'audio</span>
+                        <div class="flex justify-center items-center w-full">
+                            <label for="{{ form.coverFile.vars.id }}" class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 relative">
+                                <div class="flex flex-col justify-center items-center pt-5 pb-6">
+                                    <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                        <span class="font-semibold">Cliquez pour télécharger</span>
+                                        ou par glisser-déposer
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG (MAX. 2MB)</p>
+                                </div>
+                                {# {{ form_widget(form.coverFile, {'attr': {'class': 'hidden'}}) }} #}
+                                {{ form_widget(form.coverFile) }}
+                            </label>
+                        </div>
+                        <div class="mt-1 text-sm text-red-600 dark:text-red-500">
+                            {{ form_errors(form.coverFile) }}
+                        </div>
+                    </div>
+
+                    <!-- Catégorie -->
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.category, {'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow-500 dark:focus:border-yellow-500'}}) }}
+                        <div class="mt-1 text-sm text-red-600 dark:text-red-500">
+                            {{ form_errors(form.category) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton Submit -->
+                <div class="flex justify-between items-center mt-6">
+                    <a href="{{ path('app_audio_index') }}" class="text-sm font-medium text-yellow-700 hover:text-yellow-800 dark:text-yellow-500">
+                        ← Retour à la liste
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-yellow-700 rounded-lg focus:ring-4 focus:ring-yellow-200 dark:focus:ring-yellow-900 hover:bg-yellow-800 transition-colors duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Ajouter l'audio
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+      </section>
+      </div>
+    </div>
+</section>
+{% endblock %}
+
+{# {% block in_body %}
+<section class="w-full dark:bg-gray-900 py-1 sm:py-2">
+  <div class="mx-auto max-w-screen-2xl lg:px-6">
+      <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+        <h5 class="text-center mb-2 text-2xl font-semibold dark:text-white">
+            <span class="bg-gradient-to-r from-orange-500 to-red-800 text-transparent bg-clip-text">Créer un nouveau podcast</span></h5>
+        </h5>
+        <section class="bg-white dark:bg-gray-900">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            {{ form_start(form) }}
+                <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.title, 'Titre de l\'Audio', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-600 focus:border-yellow-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow-500 dark:focus:border-yellow-500'}}) }}
+                        {{ form_errors(form.title, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                    </div>
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow-500 dark:focus:border-yellow-500'}}) }}
+                        {{ form_errors(form.description, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                    </div>
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.audioFile, 'Charger l\'audio', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.audioFile, {'attr': {'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'}}) }}
+                        {{ form_errors(form.audioFile, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">MP3</p>
+                    </div>
+                    <div class="sm:col-span-2 flex items-center justify-center w-full flex-col">
+                      <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Couverture de l'audio</span>
+                      <div class="flex justify-center items-center w-full">
+                          <label for="dropzone-file" class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                              <div class="flex flex-col justify-center items-center pt-5 pb-6">
+                                  <svg aria-hidden="true" class="mb-3 w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                  </svg>
+                                  <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                      <span class="font-semibold">Cliquez pour télécharger</span>
+                                      ou par glisser-déposer
+                                  </p>
+                                  <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                              </div>
+                              {{ form_widget(form.coverFile) }}
+                              {{ form_errors(form.coverFile, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                          </label>
+                      </div>
+                  </div>
+                  </div>
+                  <div class="flex">
+                  </div>
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}}) }}
+                        {{ form_widget(form.category, {'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow-500 dark:focus:border-yellow-500'}}) }}
+                        {{ form_errors(form.category, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                    </div>
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-yellow-700 rounded-lg focus:ring-4 focus:ring-yellow-200 dark:focus:ring-yellow-900 hover:bg-yellow-800">
+                    Ajouter un l'audio
+                </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+      </section>
+      </div>
+    </div>
+</section>
+
+    <a href="{{ path('app_audio_index') }}">back to list</a>
+{% endblock %} #}

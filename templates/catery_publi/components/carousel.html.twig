@@ -1,0 +1,122 @@
+<!-- News Carousel Component -->
+<div class="relative w-full" id="newsCarousel">
+    <!-- Main Carousel Container -->
+    <div class="relative h-[400px] md:h-[500px] lg:h-[550px] overflow-hidden rounded-lg shadow-xl bg-white">
+        <!-- Carousel Track -->
+        <div class="carousel-track flex transition-transform duration-500 ease-in-out h-full" id="carouselTrack">
+            {% for article in latestArticles %}
+            <div class="carousel-slide min-w-full h-full relative {{ loop.first ? 'active' : '' }}" data-slide="{{ loop.index0 }}">
+                <!-- Image Container -->
+                <div class="absolute inset-0 md:w-2/3 lg:w-3/5">
+                {% if article.imageUrl %}
+                <img src="{{ vich_uploader_asset(article, 'imageFile') }}" alt="{{ article.title }}" class="w-full h-full object-cover">
+                {% else %}
+                <img src="{{ asset('images/static/default.png') }}" alt="{{ article.title }}" class="w-full h-full object-cover">
+                {% endif %}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden"></div>
+                </div>
+                
+                <!-- Content Panel -->
+                <div class="absolute inset-0 md:left-2/3 lg:left-3/5 bg-white md:bg-gradient-to-r md:from-white md:via-white md:to-gray-50 flex items-center">
+                    <div class="p-6 md:p-8 lg:p-10 w-full">
+                        <!-- Category Badge -->
+                        <div class="mb-4">
+                            {# {% set categoryColors = {
+                                'Politics': 'bg-blue-600',
+                                'Technology': 'bg-purple-600',
+                                'Environment': 'bg-green-600',
+                                'Science': 'bg-indigo-600',
+                                'Education': 'bg-orange-600'
+                            } %} #}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-700 text-white">
+                                {{ article.category.name }}
+                            </span>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h3 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 leading-tight">
+                            <a class="hover:text-orange-500" href="{{ path('app_single_article_public', {'slug': article.slug}) }}" alt="{{ article.title }}">{{ article.title }}</a>
+                        </h3>
+                        
+                        <!-- Content -->
+                        <p class="text-sm text-gray-500 mb-6 line-clamp-3 hidden md:block">
+                            {{ article.content | slice(0, 150) | raw }} ...
+                        </p>
+                        
+                        <!-- Meta Information -->
+                        <div class="flex flex-col gap-3 mb-6">
+                            <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                <span class="flex items-center">
+                                    <i class="far fa-user mr-1"></i>
+                                    {{ article.author.firstname }}
+                                </span>
+                                <span class="flex items-center">
+                                    <i class="far fa-clock mr-1"></i>
+                                    {# {{ item.readTime }} #} 3 min
+                                </span>
+                                <span class="flex items-center">
+                                    <i class="far fa-calendar mr-1"></i>
+                                    {{ article.publishedAt|date('M d, Y') }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Read More Button -->
+                        <a href="#" 
+                           class="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded hover:bg-primary-700 transition-colors group">
+                            Voir plus
+                            <i class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile Content Overlay -->
+                <div class="absolute bottom-0 left-0 right-0 p-6 text-white md:hidden">
+                    <h3 class="text-lg font-bold mb-2 leading-tight">{{ article.title }}</h3>
+                    <div class="flex items-center text-xs space-x-3">
+                        <span>{{ article.author.firstname }}</span>
+                        <span>{{ article.publishedAt|date('M d') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Navigation Arrows -->
+        <button class="carousel-btn carousel-btn-prev absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-all duration-200" 
+                id="prevBtn">
+            <i class="fas fa-chevron-left text-sm"></i>
+        </button>
+        
+        <button class="carousel-btn carousel-btn-next absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-all duration-200" 
+                id="nextBtn">
+            <i class="fas fa-chevron-right text-sm"></i>
+        </button>
+        
+        <!-- Slide Counter -->
+        <div class="absolute top-4 right-4 z-20 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
+            <span id="currentSlide">1</span> / {{ items|length }}
+        </div>
+    </div>
+    
+    <!-- Thumbnail Navigation -->
+    <div class="flex justify-center mt-6 space-x-2 overflow-x-auto pb-2" id="carouselThumbs">
+        {% for item in latestArticles %}
+        <button class="carousel-thumb flex-shrink-0 w-20 h-16 rounded overflow-hidden border-2 transition-all duration-200 {{ loop.first ? 'border-primary-600' : 'border-gray-300' }}" 
+                data-slide="{{ loop.index0 }}">
+            {% if item.imageUrl %}
+                <img src="{{ vich_uploader_asset(item, 'imageFile') }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+            {% else %}
+                <img src="{{ asset('images/static/default.png') }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+            {% endif %}
+
+        </button>
+        {% endfor %}
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="mt-4 w-full bg-gray-200 rounded-full h-1 overflow-hidden">
+        <div class="carousel-progress h-full bg-primary-600 rounded-full transition-all duration-100 ease-linear" 
+             id="carouselProgress" style="width: 0%"></div>
+    </div>
+</div>

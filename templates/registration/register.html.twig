@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<div class="relative flex flex-col items-center justify-center h-screen overflow-hidden">
+    <div class="w-full p-6 bg-white border-t-4 border-primary rounded-md shadow-md border-top lg:max-w-lg">
+    <div>
+        <div class="avatar flex justify-center">
+            <div class="w-24 rounded-full">
+                <img src="images/static/tan.jpg" alt="TUNAMAINI AFRICA MEDIA LOGO"/>
+            </div>
+        </div>
+        <h1 class="text-3xl font-semibold text-center text-primary pt-5">INSCRIPTION</h1>
+    </div>
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm, {'attr': {'class': 'space-y-4'}}) }}
+            <div class="flex flex-col">
+                {{ form_row(registrationForm.username, {
+                    'label': 'Nom a utiliser',
+                    'attr': {
+                        'class': 'w-full input input-primary'
+                    },
+                    'label_attr': {
+                        'class': 'text-sm font-medium text-gray-700'
+                    }
+                }) }}
+            </div>
+            <div class="flex flex-col">
+                {{ form_row(registrationForm.firstname, {
+                    'label': 'Prenom',
+                    'attr': {
+                        'class': 'w-full input input-primary'
+                    },
+                    'label_attr': {
+                        'class': 'text-sm font-medium text-gray-700'
+                    }
+                }) }}
+            </div>
+            <div class="flex flex-col">
+                {{ form_row(registrationForm.lastname, {
+                    'label': 'Nom de famille',
+                    'attr': {
+                        'class': 'w-full input input-primary'
+                    },
+                    'label_attr': {
+                        'class': 'text-sm font-medium text-gray-700'
+                    }
+                }) }}
+            </div>
+            <div class="flex flex-col">
+                {{ form_row(registrationForm.email, {
+                    'label': 'Adress Email',
+                    'attr': {
+                        'class': 'w-full input input-primary'
+                    },
+                    'label_attr': {
+                        'class': 'text-sm font-medium text-gray-700'
+                    }
+                }) }}
+            </div>
+            <div class="flex flex-col">
+                {{ form_row(registrationForm.plainPassword, {
+                    'label': 'Mot de passe',
+                    'attr': {
+                        'class': 'w-full input input-primary'
+                    },
+                    'label_attr': {
+                        'class': 'text-sm font-medium text-gray-700'
+                    }
+                }) }}
+            </div>
+            <div class="flex items-center space-x-2">
+                {{ form_widget(registrationForm.agreeTerms, {
+                    'attr': {
+                        'class': 'checkbox checkbox-primary'
+                    }
+                }) }}
+                <label for="{{ registrationForm.agreeTerms.vars.id }}" class="text-sm text-gray-700">J'accepte les termes et conditions</label>
+            </div>
+                <div>
+                    <button class="btn btn-block btn-primary" type="submit">S'inscrire</button>
+                </div>
+        {{ form_end(registrationForm) }}
+    </div>
+</div>
+{% endblock %}

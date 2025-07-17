@@ -1,0 +1,295 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+{% block meta %}
+    {{ parent() }}
+    <meta name="description" content="{{ article.content|striptags|slice(0, 145) ~ '...' }}">
+    
+    {# Open Graph / Facebook #}
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ app.request.uri }}">
+    <meta property="og:title" content="{{ article.title }}">
+    <meta property="og:description" content="{{ article.content|striptags|slice(0, 145) ~ '...' }}">
+    {% if article.imageUrl %}
+    <meta property="og:image" content="{{ vich_uploader_asset(article, 'imageFile')|default("images/static/default.png") }}">
+    {% endif %}
+    
+    {# Twitter Card #}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ article.title }}">
+    <meta name="twitter:description" content="{{ article.content|striptags|slice(0, 145) ~ '...' }}">
+{% endblock %}
+{% block body %}
+<div class="fade-in">
+    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Category Badge -->
+        <div class="slide-in-left">
+            <div class="flex items-center space-x-2 mb-6">
+                <span class="text-gray-400">•</span>
+                <span class="text-leparisien-blue font-semibold text-sm"><a href="{{ path('app_category_public', {'slug': article.category.slug}) }}">{{ article.category.name }}</a></span>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <header class="mb-8 slide-in-right">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 leading-tight mb-4 hover:text-leparisien-red transition-colors duration-300">
+                {{ article.title }}
+            </h1>
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 pb-6 border-b border-gray-200">
+                <div class="flex items-center space-x-2">
+                    <i data-feather="user" class="w-4 h-4"></i>
+                    <span class="font-medium text-gray-900">{{ article.author.firstname ~" "~ article.author.lastname }}</span>
+                    <span>Journaliste - blogueur</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-feather="calendar" class="w-4 h-4"></i>
+                    <time datetime="{{ article.publishedAt|date('c') }}">
+                        {{ article.publishedAt|date('d/m/Y à H:i') }}
+                    </time>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-feather="clock" class="w-4 h-4"></i>
+                    <span>3 min de lecture</span>
+                </div>
+                {% if article.updatedAt > article.publishedAt %}
+                <div class="flex items-center space-x-2 text-orange-600">
+                    <i data-feather="edit" class="w-4 h-4"></i>
+                    <span>Mis à jour le {{ article.updatedAt|date('d/m/Y à H:i') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Social Sharing -->
+        <div class="flex items-center justify-between mb-8 slide-in-up" x-data="{ shared: false }">
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium text-gray-700">Partager :</span>
+                <div class="social-share flex gap-2">
+                    <a class="bg-blue-600 px-5 py-1.5 rounded-xl" href="https://www.facebook.com/sharer/sharer.php?u={{ app.request.uri }}" target="_blank">
+                        <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M13.135 6H15V3h-1.865a4.147 4.147 0 0 0-4.142 4.142V9H7v3h2v9.938h3V12h2.021l.592-3H12V6.591A.6.6 0 0 1 12.592 6h.543Z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+
+                    <!-- Twitter -->
+                    <a class="bg-gray-800 px-5 py-1.5 rounded-xl" href="https://twitter.com/intent/tweet?url={{ app.request.uri }}&text={{ article.title|url_encode }}" target="_blank">
+                        <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z"/>
+                        </svg>
+                    </a>
+                    <!-- WhatsApp (mobile) -->
+                    <a class="bg-orange-600 px-5 py-1.5 rounded-xl" href="https://wa.me/?text={{ article.title|url_encode }}%20{{ app.request.uri|url_encode }}" target="_blank">
+                        <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path fill="currentColor" fill-rule="evenodd" d="M12 4a8 8 0 0 0-6.895 12.06l.569.718-.697 2.359 2.32-.648.379.243A8 8 0 1 0 12 4ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382 1.426-4.829-.006-.007-.033-.055A9.958 9.958 0 0 1 2 12Z" clip-rule="evenodd"/>
+                            <path fill="currentColor" d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1.008 1.008 0 0 0-.34-.075c-.196 0-.362.098-.49.291-.146.217-.587.732-.723.886-.018.02-.042.045-.057.045-.013 0-.239-.093-.307-.123-1.564-.68-2.751-2.313-2.914-2.589-.023-.04-.024-.057-.024-.057.005-.021.058-.074.085-.101.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711-.158-.377-.366-.552-.655-.552-.027 0 0 0-.112.005-.137.005-.883.104-1.213.311-.35.22-.94.924-.94 2.16 0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537 1.412.564 2.081.63 2.461.63.16 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276.192-.534.243-1.117.115-1.329-.088-.144-.239-.216-.43-.308Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div x-show="shared" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-90"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-90"
+                 class="bg-orange-100 text-orange-800 px-3 py-1 rounded-lg text-sm font-medium">
+                Partagé !
+            </div>
+        </div>
+
+        <!-- Main Image -->
+        <figure class="mb-8 zoom-in">
+            <div class="relative overflow-hidden rounded-lg shadow-lg group">
+            {% if article.imageUrl %}
+                <img src="{{ vich_uploader_asset(article, 'imageFile') }}" 
+                     alt="{{ article.title }}" 
+                     class="w-full h-64 md:h-96 object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {% else %}
+                <img src="{{ asset('images/static/default.png') }}" 
+                     alt="{{ article.title }}" 
+                     class="w-full h-64 md:h-96 object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {% endif %}
+            </div>
+            <figcaption class="mt-3 text-sm text-gray-600 italic">
+                Illustration en image
+            </figcaption>
+        </figure>
+
+        <!-- Player Audio WhatsApp-like -->
+        {% if article.emissionUrl %}
+        <div class="mb-8 bg-gray-50 rounded-xl p-4 shadow-inner slide-in-up">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <button id="playButton" class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white hover:bg-orange-600 transition-colors duration-200 shadow-md">
+                        <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Interview</h3>
+                        <p class="text-sm text-gray-600">Écoutez l'interview associée</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span id="currentTime" class="text-xs text-gray-500">0:00</span>
+                    <input type="range" id="progressBar" min="0" max="100" value="0" class="w-32 h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer">
+                    <span id="duration" class="text-xs text-gray-500">0:00</span>
+                </div>
+            </div>
+            <audio id="audioPlayer" preload="metadata">
+                <source src="{{ vich_uploader_asset(article, 'emissionFile') }}" type="audio/mpeg">
+                Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+        </div>
+        {% endif %}
+
+        <!-- Article Content -->
+        <div class="prose prose-lg max-w-none">
+            {{ article.content|raw }}
+        </div>
+
+        <!-- Tags -->
+        <div class="mt-12 pt-6 border-t border-gray-200 slide-in-up">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3">Mots-clés :</h4>
+            <div class="flex flex-wrap gap-2">
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-leparisien-red hover:text-white transition-all duration-300 cursor-pointer">
+                    Uvira
+                </span>
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-leparisien-red hover:text-white transition-all duration-300 cursor-pointer">
+                    Christian
+                </span>
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-leparisien-red hover:text-white transition-all duration-300 cursor-pointer">
+                    RDC
+                </span>
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-leparisien-red hover:text-white transition-all duration-300 cursor-pointer">
+                    Autres
+                </span>
+            </div>
+        </div>
+    </article>
+
+    <!-- Related Articles -->
+    <section class="bg-gray-50 py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-serif font-bold text-gray-900 slide-in-left">Articles liés</h3>
+                <a href="{{ path('app_category_public', {'slug': article.category.slug}) }}" class="text-leparisien-blue hover:text-leparisien-red transition-colors duration-200 flex items-center">
+                    Voir plus dans {{ article.category.name }}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for relatedArticle in relatedArticles %}
+                    <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                        <div class="relative overflow-hidden h-48">
+                            {% if relatedArticle.imageUrl %}
+                                <img src="{{ vich_uploader_asset(relatedArticle, 'imageFile') }}" 
+                                     alt="{{ relatedArticle.title }}" 
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            {% else %}
+                                <img src="{{ asset('images/static/default.png') }}" 
+                                     alt="{{ relatedArticle.title }}" 
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            {% endif %}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <span class="absolute top-3 left-3 bg-leparisien-red text-white text-xs font-semibold px-2 py-1 rounded">
+                                {{ relatedArticle.category.name }}
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-serif font-semibold text-gray-900 mb-2 hover:text-leparisien-red transition-colors line-clamp-2">
+                                <a href="{{ path('app_single_article_public', {'slug': relatedArticle.slug}) }}">{{ relatedArticle.title }}</a>
+                            </h4>
+                            <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ relatedArticle.content|striptags|slice(0, 100) }}...</p>
+                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                <div class="flex items-center">
+                                    <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                                    <time datetime="{{ relatedArticle.publishedAt|date('c') }}">
+                                        {{ relatedArticle.publishedAt|date('d/m/Y') }}
+                                    </time>
+                                </div>
+                                <span class="flex items-center">
+                                    <i data-feather="eye" class="w-4 h-4 mr-1"></i>
+                                    {{ relatedArticle.viewCount }}
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playButton = document.getElementById('playButton');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const progressBar = document.getElementById('progressBar');
+        const currentTime = document.getElementById('currentTime');
+        const duration = document.getElementById('duration');
+
+        if (audioPlayer) {
+            // Formatage du temps (mm:ss)
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+
+            // Mise à jour de la durée totale
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                duration.textContent = formatTime(audioPlayer.duration);
+            });
+
+            // Bouton play/pause
+            playButton.addEventListener('click', function() {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                } else {
+                    audioPlayer.pause();
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
+                }
+            });
+
+            // Mise à jour de la barre de progression
+            audioPlayer.addEventListener('timeupdate', function() {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBar.value = progress;
+                currentTime.textContent = formatTime(audioPlayer.currentTime);
+            });
+
+            // Navigation dans l'audio via la barre de progression
+            progressBar.addEventListener('input', function() {
+                const seekTime = (progressBar.value / 100) * audioPlayer.duration;
+                audioPlayer.currentTime = seekTime;
+            });
+
+            // Réinitialisation à la fin
+            audioPlayer.addEventListener('ended', function() {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                progressBar.value = 0;
+                currentTime.textContent = '0:00';
+            });
+        }
+    });
+    </script>
+    
+{% endblock %}

@@ -1,0 +1,32 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+       articles:
+           uri_prefix: /images/articles
+           upload_destination: '%kernel.project_dir%/public/images/articles'
+           namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+
+       audio:
+           uri_prefix: /audios/podcasts
+           upload_destination: '%kernel.project_dir%/public/audios/podcasts'
+           namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+       
+       emission:
+           uri_prefix: /audios/emission
+           upload_destination: '%kernel.project_dir%/public/audios/emission'
+           namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+           
+       acover:
+           uri_prefix: /images/acover
+           upload_destination: '%kernel.project_dir%/public/images/acover'
+           namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+       
+       advertises:
+           uri_prefix: /images/advertises
+           upload_destination: '%kernel.project_dir%/public/images/advertises'
+           namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+           
+           inject_on_load: false
+           delete_on_update: true
+           delete_on_remove: true
