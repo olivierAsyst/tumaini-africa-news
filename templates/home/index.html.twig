@@ -36,7 +36,7 @@
       <div class="rounded-xl carousel-fixed-item flex-shrink-0 w-full h-[200px] md:h-[250px] overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         {% if i < advertises_count and last_advertise[i] %}
           {% set imageUrl = vich_uploader_asset(last_advertise[i], 'imageFile') %}
-          <div class="w-full h-full bg-cover bg-center group" style="background-image: url('{{ imageUrl ? asset(imageUrl) : asset('images/static/default.png') }}')">
+          <div class="w-full h-full bg-cover bg-center group" style="background-image: url('/images/static/default.png')">
             <div class="w-full h-full p-4 bg-black/40 flex flex-col justify-between transition-all duration-300 group-hover:bg-black/50">
               <span class="inline-block bg-violet-800 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1 rounded-xl uppercase transition-all duration-300 self-start shadow-md">
                 PUBLICITE
@@ -506,7 +506,7 @@ const advertisesData = [
         company: "{{ advertise.company|escape('js') }}",
         phoneNumber: "{{ advertise.phoneNumber|escape('js') }}",
         email: "{{ advertise.email|escape('js') }}",
-        imageUrl: "{{ vich_uploader_asset(advertise, 'imageFile') ? asset(vich_uploader_asset(advertise, 'imageFile')) : '' }}"
+        imageUrl: "{{ vich_uploader_asset(advertise, 'imageFile') ? vich_uploader_asset(advertise, 'imageFile') : '' }}"
     }{% if not loop.last %},{% endif %}
     {% endfor %}
 ];
