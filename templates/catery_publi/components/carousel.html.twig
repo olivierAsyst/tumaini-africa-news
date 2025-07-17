@@ -11,7 +11,7 @@
                 {% if article.imageUrl %}
                 <img src="{{ vich_uploader_asset(article, 'imageFile') }}" alt="{{ article.title }}" class="w-full h-full object-cover">
                 {% else %}
-                <img src="{{ asset('images/static/default.png') }}" alt="{{ article.title }}" class="w-full h-full object-cover">
+                <img src="images/static/default.png" alt="{{ article.title }}" class="w-full h-full object-cover">
                 {% endif %}
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden"></div>
                 </div>
@@ -21,13 +21,6 @@
                     <div class="p-6 md:p-8 lg:p-10 w-full">
                         <!-- Category Badge -->
                         <div class="mb-4">
-                            {# {% set categoryColors = {
-                                'Politics': 'bg-blue-600',
-                                'Technology': 'bg-purple-600',
-                                'Environment': 'bg-green-600',
-                                'Science': 'bg-indigo-600',
-                                'Education': 'bg-orange-600'
-                            } %} #}
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-700 text-white">
                                 {{ article.category.name }}
                             </span>
@@ -107,7 +100,7 @@
             {% if item.imageUrl %}
                 <img src="{{ vich_uploader_asset(item, 'imageFile') }}" alt="{{ item.title }}" class="w-full h-full object-cover">
             {% else %}
-                <img src="{{ asset('images/static/default.png') }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+                <img src="images/static/default.png" alt="{{ item.title }}" class="w-full h-full object-cover">
             {% endif %}
 
         </button>
