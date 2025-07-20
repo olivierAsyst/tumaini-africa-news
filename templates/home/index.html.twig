@@ -33,30 +33,33 @@
 <div class="carousel-fixed-container relative max-w-4xl mx-auto my-4 overflow-hidden rounded-xl shadow-lg">
   <div id="fixedCarousel" class="carousel-fixed-slides flex w-full transition-transform duration-500 ease-in-out">    
     {% for i in 0..2 %}
-      <div class="rounded-xl carousel-fixed-item flex-shrink-0 w-full h-[200px] md:h-[250px] overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+      <div class="rounded-xl carousel-fixed-item flex-shrink-0 w-full h-[200px] md:h-[250px] overflow-hidden transform hover:scale-[1.01] transition-transform duration-300 relative">
         {% if i < advertises_count and last_advertise[i] %}
           {% set imageUrl = vich_uploader_asset(last_advertise[i], 'imageFile') %}
-          <div class="w-full h-full bg-cover bg-center group" style="background-image: url('/images/static/default.png')">
-            <div class="w-full h-full p-4 bg-black/40 flex flex-col justify-between transition-all duration-300 group-hover:bg-black/50">
-              <span class="inline-block bg-violet-800 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1 rounded-xl uppercase transition-all duration-300 self-start shadow-md">
-                PUBLICITE
-              </span>
-              <div class="text-white">
-                <p class="text-sm font-bold tracking-wide">{{ last_advertise[i].company ? last_advertise[i].company : '' }}</p>
-                <h3 class="text-xl font-bold"> 
-                  <a onclick="showAdvertiseModal({{ last_advertise[i].id|json_encode }})" href="#" class="hover:text-yellow-300 transition-colors duration-200">
-                    {{ last_advertise[i].title }}, 
-                    <span class="text-sm bg-yellow-700 rounded-2xl p-1 px-2 inline-block hover:bg-yellow-600 transition-colors duration-200">clique ici</span>
-                  </a>
-                </h3>
-                <div class="flex gap-2 flex-wrap mt-1">
-                  {% if last_advertise[i].phoneNumber %}
-                    <p class="text-sm bg-black/30 px-2 py-1 rounded-lg">{{ last_advertise[i].phoneNumber }}</p>
-                  {% endif %}
-                  {% if last_advertise[i].email %}
-                    <p class="text-sm bg-black/30 px-2 py-1 rounded-lg">{{ last_advertise[i].email }}</p>
-                  {% endif %}
-                </div>
+          <div class="absolute inset-0 z-0">
+            <img src="{{ imageUrl ? imageUrl : '/images/static/default.png' }}" 
+                 alt="Publicité {{ last_advertise[i].title }}" 
+                 class="w-full h-full object-cover">
+          </div>
+          <div class="w-full h-full p-4 bg-black/40 flex flex-col justify-between transition-all duration-300 group-hover:bg-black/50 relative z-10">
+            <span class="inline-block bg-violet-800 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1 rounded-xl uppercase transition-all duration-300 self-start shadow-md">
+              PUBLICITE
+            </span>
+            <div class="text-white">
+              <p class="text-sm font-bold tracking-wide">{{ last_advertise[i].company ? last_advertise[i].company : '' }}</p>
+              <h3 class="text-xl font-bold"> 
+                <a onclick="showAdvertiseModal({{ last_advertise[i].id|json_encode }})" href="#" class="hover:text-yellow-300 transition-colors duration-200">
+                  {{ last_advertise[i].title }}, 
+                  <span class="text-sm bg-yellow-700 rounded-2xl p-1 px-2 inline-block hover:bg-yellow-600 transition-colors duration-200">clique ici</span>
+                </a>
+              </h3>
+              <div class="flex gap-2 flex-wrap mt-1">
+                {% if last_advertise[i].phoneNumber %}
+                  <p class="text-sm bg-black/30 px-2 py-1 rounded-lg">{{ last_advertise[i].phoneNumber }}</p>
+                {% endif %}
+                {% if last_advertise[i].email %}
+                  <p class="text-sm bg-black/30 px-2 py-1 rounded-lg">{{ last_advertise[i].email }}</p>
+                {% endif %}
               </div>
             </div>
           </div>

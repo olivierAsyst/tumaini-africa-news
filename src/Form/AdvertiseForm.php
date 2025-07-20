@@ -20,9 +20,15 @@ class AdvertiseForm extends AbstractType
         $builder
             ->add('company', TextType::class)
             ->add('title', TextType::class)
-            ->add('phoneNumber', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('description', TextareaType::class)
+            ->add('phoneNumber', TextType::class, [
+                'required' => false,
+            ])
+            ->add('email', EmailType::class, [
+                'required'=> false,
+            ])
+            ->add('description', TextareaType::class, [
+                'required'=> false,
+            ])
             ->add('isMiddle', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Est-ce une annonce intermédiaire ?',
