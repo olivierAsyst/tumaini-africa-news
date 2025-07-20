@@ -18,7 +18,14 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ article.title }}">
     <meta name="twitter:description" content="{{ article.content|striptags|slice(0, 145) ~ '...' }}">
-
+    
+    {# WhatsApp #}
+    <meta property="og:site_name" content="Tumaini Africa News">
+    {% if article.imageUrl %}
+    <meta property="og:image:secure_url" content="{{ vich_uploader_asset(article, 'imageFile')|default("images/static/default.png") }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     {% endif %}
 {% endblock %}
 {% block body %}
