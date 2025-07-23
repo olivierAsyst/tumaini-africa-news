@@ -11,6 +11,13 @@
         </h5>
         <section class="bg-white dark:bg-gray-900">
         <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            {% for flash_type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ flash_type }}">
+                        <p class="text-red-900 bg-red-200 rounded p-2 border border-red-700">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endfor %}
             {{ form_start(form) }}
                 <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div class="sm:col-span-2">

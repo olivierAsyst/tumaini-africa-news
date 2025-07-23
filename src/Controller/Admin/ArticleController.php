@@ -46,6 +46,14 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $slug = $this->generateSlug($article->getTitle());
+            $existingArticle = $entityManager->getRepository(Article::class)->findOneBy(['slug' => $slug]);
+            if($existingArticle){
+                $this->addFlash('error', 'Un article avec ce titre existe déjà');
+                return $this->redirectToRoute('app_article_new');
+            }
+
             $article->setCreatedAt(new DateTimeImmutable());
             $article->setPublishedAt(new DateTimeImmutable());
             $article->setSlug($this->generateSlug($article->getTitle()));
