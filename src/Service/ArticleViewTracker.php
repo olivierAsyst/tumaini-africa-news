@@ -15,11 +15,11 @@ class ArticleViewTracker
 
     public function track(Article $article)
     {
-        $session = $this->requestStack->getSession();
-        if(!$session->get('viewed_'.$article->getId(), false)){
+        // $session = $this->requestStack->getSession();
+        // if(!$session->get('viewed_'.$article->getId(), false)){
             $article->incrementCount();
             $this->em->flush();
-            $session->set('viewed_'.$article->getId(), true);
-        }
+            // $session->set('viewed_'.$article->getId(), true);
+        // }
     }
 }

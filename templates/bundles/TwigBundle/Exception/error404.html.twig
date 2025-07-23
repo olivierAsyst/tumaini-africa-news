@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}404{% endblock %}
+
+{% block body %}
+    <div class="error-container">
+        <h1>404 - Aucune resource trouvé a cet adresse</h1>
+        <p>Aucune ressource disponible a ce lien. Notre équipe a été notifiée.</p>
+        <p>Merci de réessayer ultérieurement.</p>
+        
+        <div class="actions">
+            <a href="{{ path('app_home') }}" class="btn btn-primary">
+                ← Retour à l'accueil
+            </a>
+            <a href="mailto:support@votre-domaine.com" class="btn btn-secondary">
+                Contacter le support
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 5rem auto;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
