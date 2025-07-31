@@ -77,6 +77,8 @@ final class SitemapController extends AbstractController
 
         // 5. Génération XML
         try{
+            set_time_limit(120); // Increase execution time limit
+            ini_set('memory_limit', '256M'); // Increase memory limit
             $response = new Response(
                 $this->renderView('sitemap/sitemap.xml.twig', ['urls' => $urls]),
                 200,

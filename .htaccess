@@ -26,3 +26,13 @@
   RewriteCond %{REQUEST_URI} !public/
   RewriteRule (.*) /public/$1 [L]
 </IfModule>
+
+<IfModule mod_php.c>
+    php_value memory_limit 256M
+    php_value max_execution_time 120
+</IfModule>
+
+<Files "sitemap.xml">
+    Require all granted
+    Header set Content-Type "application/xml"
+</Files>
