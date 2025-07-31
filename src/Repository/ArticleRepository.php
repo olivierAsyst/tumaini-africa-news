@@ -181,6 +181,8 @@ public function findTrendingArticles(int $limit = 10): array
         ->getResult();
 }
 
+
+
 //    /**
 //     * @return Article[] Returns an array of Article objects
 //     */

@@ -29,12 +29,20 @@ final class SitemapController extends AbstractController
         ];
 
         // 2. Articles (dynamiques)
-        $articles = $articleRepo->findAll();
+        // $articles = $articleRepo->findAll();
+        $articles = $articleRepo->createQueryBuilder('a')
+                                ->select('a.slug, a.updatedAt')
+                                ->getQuery()
+                                ->getArrayResult();
 
+        // dd($articles);                        
         foreach ($articles as $article) {
+            $updatedAt = $article['updatedAt'] instanceof \DateTimeInterface 
+                ? $article['updatedAt']->format('Y-m-d') 
+                : date('Y-m-d');
             $urls[] = [
-                'loc' => $urlGenerator->generate('app_single_article_public', ['slug' => $article->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL),
-                'lastmod' => $article->getUpdatedAt()->format('Y-m-d'),
+                'loc' => $urlGenerator->generate('app_single_article_public', ['slug' => $article['slug']], UrlGeneratorInterface::ABSOLUTE_URL),
+                'lastmod' => $updatedAt,
                 'changefreq' => 'weekly',
                 'priority' => '0.9'
             ];
@@ -68,11 +76,16 @@ final class SitemapController extends AbstractController
         }
 
         // 5. Génération XML
-        $response = new Response(
-            $this->renderView('sitemap/sitemap.xml.twig', ['urls' => $urls]),
-            200,
-            ['Content-Type' => 'application/xml']
-        );
+        try{
+            $response = new Response(
+                $this->renderView('sitemap/sitemap.xml.twig', ['urls' => $urls]),
+                200,
+                ['Content-Type' => 'application/xml']
+            );
+        }catch(\Exception $e){
+            error_log($e->getMessage());
+            $response = new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://tumainiafricanews.info/</loc></url></urlset>', 200, ['Content-Type' => 'application/xml']);
+        }
 
         return $response;
     }
