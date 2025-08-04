@@ -21,6 +21,10 @@
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
+/public/audios/
+/public/images/acover/
+/public/images/advertises/
+/public/images/articles/
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
