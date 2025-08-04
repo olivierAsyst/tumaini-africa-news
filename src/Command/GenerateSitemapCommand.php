@@ -49,7 +49,7 @@ class GenerateSitemapCommand extends Command
         
         // Ajoutez ici la même logique que dans votre SitemapController
         $urls[] = [
-            'loc' => $this->urlGenerator->generate('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'loc' => $_ENV['APP_URL'] . $this->urlGenerator->generate('app_home'),
             'lastmod' => date('Y-m-d'),
             'priority' => '1.0'
         ];
@@ -59,9 +59,8 @@ class GenerateSitemapCommand extends Command
             $updatedAt = $article->getUpdatedAt() ? $article->getUpdatedAt()->format('Y-m-d') : date('Y-m-d');
             
             $urls[] = [
-                'loc' => $this->urlGenerator->generate('app_single_article_public', 
-                    ['slug' => $article->getSlug()], 
-                    UrlGeneratorInterface::ABSOLUTE_URL),
+                'loc' => $_ENV['APP_URL'] . $this->urlGenerator->generate('app_single_article_public', 
+                    ['slug' => $article->getSlug()]),
                 'lastmod' => $updatedAt,
                 'priority' => '0.9'
             ];
@@ -71,7 +70,7 @@ class GenerateSitemapCommand extends Command
         foreach ($this->categoryRepo->findAll() as $category) {
             $updatedAt = $category->getUpdatedAt() ? $category->getUpdatedAt()->format('Y-m-d') : date('Y-m-d');
             $urls[] = [
-                'loc' => $this->urlGenerator->generate('app_category_public', ['slug' => $category->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL),
+                'loc' => $_ENV['APP_URL'] . $this->urlGenerator->generate('app_category_public', ['slug' => $category->getSlug()]),
                 'lastmod' => $updatedAt, //$category->getUpdatedAt() ? $category->getUpdatedAt()->format('Y-m-d') : (new \DateTime())->format('Y-m-d'),
                 'changefreq' => 'weekly',
                 'priority' => '0.7'
@@ -87,7 +86,7 @@ class GenerateSitemapCommand extends Command
         
         foreach ($staticPages as $page) {
             $urls[] = [
-                'loc' => $this->urlGenerator->generate($page['route'], [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'loc' => $_ENV['APP_URL'] . $this->urlGenerator->generate($page['route']),
                 'lastmod' => (new \DateTime())->format('Y-m-d'),
                 'changefreq' => $page['changefreq'],
                 'priority' => $page['priority']
