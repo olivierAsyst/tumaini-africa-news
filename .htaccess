@@ -33,6 +33,10 @@
 </IfModule>
 
 <Files "sitemap.xml">
-    Require all granted
+Require all granted
     Header set Content-Type "application/xml"
+    Header set Cache-Control "max-age=3600, public"
+    Header set X-Robots-Tag "noindex"
+    Header unset ETag
+    FileETag None
 </Files>
