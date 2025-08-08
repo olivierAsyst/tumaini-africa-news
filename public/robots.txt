@@ -4,3 +4,4 @@ Disallow: /admin/
 Disallow: /login/
 
 Sitemap: https://tumainiafricanews.info/sitemap.xml
+Sitemap: https://tumainiafricanews.info/sitemap-news.xml
