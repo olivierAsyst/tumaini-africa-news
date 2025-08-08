@@ -13,7 +13,7 @@ final class ContactController extends AbstractController
     {
         $contactInfo = [
             'email' => 'mwanadamutumaini@gmail.com',
-            'phone' => '+243 97 48 21 55',
+            'phone' => '+243 974 821 555',
             'address' => 'Q. Mulongwe Uvira, RDC',
             'social' => [
                 'twitter' => 'https://twitter.com/dev_community',
