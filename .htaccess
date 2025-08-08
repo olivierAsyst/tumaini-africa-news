@@ -33,10 +33,45 @@
 </IfModule>
 
 <Files "sitemap.xml">
-Require all granted
+    Require all granted
     Header set Content-Type "application/xml"
     Header set Cache-Control "max-age=3600, public"
-    Header set X-Robots-Tag "noindex"
     Header unset ETag
     FileETag None
 </Files>
+<Files "robots.txt">
+  Order Allow,Deny
+  Allow from all
+</Files>
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php8_module>
+   php_flag display_errors Off
+   php_value max_execution_time 120
+   php_value max_input_time 60
+   php_value max_input_vars 1000
+   php_value memory_limit 256M
+   php_value post_max_size 8M
+   php_value session.gc_maxlifetime 1440
+   php_value upload_max_filesize 5M
+   php_flag zlib.output_compression Off
+</IfModule>
+<IfModule lsapi_module>
+   php_flag display_errors Off
+   php_value max_execution_time 120
+   php_value max_input_time 60
+   php_value max_input_vars 1000
+   php_value memory_limit 256M
+   php_value post_max_size 8M
+   php_value session.gc_maxlifetime 1440
+   php_value upload_max_filesize 5M
+   php_flag zlib.output_compression Off
+</IfModule>
+# END cPanel-generated php ini directives, do not edit
+    Header set Cache-Control "max-age=3600, public"
+    Header unset ETag
+    FileETag None
+</Files>
+
